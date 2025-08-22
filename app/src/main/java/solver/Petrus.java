@@ -27,7 +27,7 @@ public class Petrus {
                 n[t] = s[q] << 1 | po & 1;
                 po >>= 1;
             } else n[t] = -1;
-        Cross.edgemv(n, f);
+        Cross.applyMoveToEdgeArray(n, f);
         c = po = 0; q = k;
         for (t = 0; t < 12; t++)
             if (n[t] >= 0) {

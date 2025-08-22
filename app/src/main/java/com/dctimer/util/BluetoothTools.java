@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.dctimer.R;
 import com.dctimer.activity.MainActivity;
-import com.dctimer.aes.Decrypt;
+import com.angelJK99.AESLibrary.Decrypt;
 import com.dctimer.model.BLEDevice;
 import com.dctimer.model.SmartCube;
 import com.dctimer.model.SmartTimer;
@@ -275,9 +275,9 @@ public class BluetoothTools {
             //Log.w("dct", "uuid "+uuid.toString()+" value "+Arrays.toString(value));
             if (uuid.equals(CHARACTER_UUID_DATA)) {
                 Log.w("dct", "value "+ Arrays.toString(value));
-                byte[] valhex = Decrypt.toHexValue(value);
-                Log.w("dct", "valhex "+Arrays.toString(valhex));
-                String cubeState = Utils.parseGiikerState(valhex);
+                byte[] valHex = Decrypt.toHexValue(value);
+                Log.w("dct", "valHex "+Arrays.toString(valHex));
+                String cubeState = Utils.parseGiikerState(valHex);
                 Log.w("dct", "state " + cubeState);
                 smartCube.setCubeState(cubeState);
                 if (gatt.setCharacteristicNotification(characteristic, true)) {

@@ -190,7 +190,7 @@ public class Scrambler {
                     hint = Cross.solveXcross(scramble, APP.solverType[1]);
                     break;
                 case 3:
-                    hint = EOline.solveEoline(scramble, APP.solverType[1]);
+                    hint = EOline.solveEOline(scramble, APP.solverType[1]);
                     break;
                 case 4:
                     hint = Roux.solveRoux1(scramble, APP.solverType[3]);
@@ -1191,7 +1191,7 @@ public class Scrambler {
             case 2:
                 return Cross.solveXcross(scramble, APP.solverType[1]);
             case 3:
-                return EOline.solveEoline(scramble, APP.solverType[1]);
+                return EOline.solveEOline(scramble, APP.solverType[1]);
             case 4:
                 return Roux.solveRoux1(scramble, APP.solverType[3]);
             case 5:
