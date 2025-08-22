@@ -461,7 +461,7 @@ public class Cross {
         if (depthRemaining == 0) {
             return currentEdgePermState == 1656 && currentEdgeOrientState == 1104 && (currentCrossEdgesInSliceOrientState & 15) == 0;
         }
-        if (edgePermutationDistanceTable[currentEdgePermState] > depthRemaining || edgeOrientationDistanceTable[currentEdgeOrientState] > d || crossEdgesInSliceOrientationDistanceTable[currentCrossEdgesInSliceOrientState] > d) return false;
+        if (edgePermutationDistanceTable[currentEdgePermState] > depthRemaining || edgeOrientationDistanceTable[currentEdgeOrientState] > depthRemaining || crossEdgesInSliceOrientationDistanceTable[currentCrossEdgesInSliceOrientState] > depthRemaining) return false;
         for (int i = 0; i < 6; i++)
             if (i != lastMoveAxis) {
                 int epx = currentEdgePermState, eox = currentEdgeOrientState, eofx = currentCrossEdgesInSliceOrientState;
@@ -484,11 +484,11 @@ public class Cross {
      * @param targetFaces A bitmask indicating which faces to solve the cross on (0-5).
      * @return A string containing the solutions for the specified faces.
      */
-    public static String solveCross(String scramble, int face) {
+    public static String solveCross(String scramble, int targetFaces) {
         initializeTables();
         StringBuilder sb = new StringBuilder("\n");
         for (int i = 0; i < 6; i++)
-            if (((face >> i) & 1) != 0) {
+            if (((targetFaces >> i) & 1) != 0) {
                 sb.append("\nCross(").append(FACE_COLORS[i]).append("): ");
                 sb.append(cross(scramble, 0, i));
             }
@@ -556,11 +556,11 @@ public class Cross {
      * @param targetFaces A bitmask indicating which faces to solve the XCross on.
      * @return A string containing the XCross solutions.
      */
-    public static String solveXcross(String scramble, int face) {
+    public static String solveXcross(String scramble, int targetFaces) {
         initializeTables();
         StringBuilder sb = new StringBuilder("\n");
         for (int i = 0; i < 6; i++)
-            if (((face >> i) & 1) != 0) {
+            if (((targetFaces >> i) & 1) != 0) {
                 sb.append("\nXCross(").append(FACE_COLORS[i]).append("): ");
                 sb.append(xcross(scramble, i));
             }
@@ -647,11 +647,11 @@ public class Cross {
      * @param sides Bitmask for sides (0-11, relating to EOFC_SIDE_STRINGS).
      * @return String with EOFC solutions.
      */
-    public static String solveEofc(String scramble, int side) {
+    public static String solveEofc(String scramble, int sides) {
         initializeTables();
         StringBuilder sb = new StringBuilder("\n");
         for (int i = 0; i < 6; i++) {
-            if (((side >> i) & 1) != 0)
+            if (((sides >> i) & 1) != 0)
                 sb.append(eofc(scramble, i * 2)).append(eofc(scramble, i * 2 + 1));
         }
         return sb.toString();
@@ -695,7 +695,7 @@ public class Cross {
      * @param maxDepth The maximum number of moves allowed for the cross solution.
      * @return A 2D array representing the cube state: [0] for piece positions, [1] for orientations.
      */
-    public static int[][] easyCross(int depth) {
+    public static int[][] easyCross(int maxDepth) {
         if (!isEasyCrossInitialized) {
             initializeTables();
             long t = System.currentTimeMillis();
@@ -726,10 +726,10 @@ public class Cross {
         }
         Random r = new Random();
         int i;// = r.nextInt(190080);
-        if (depth == 0) i = 494 * 384;
+        if (maxDepth == 0) i = 494 * 384;
         else do {
             i = r.nextInt(190080);
-        } while (getPruning(combinedEdgeDistanceTable, i) > depth);
+        } while (getPruning(combinedEdgeDistanceTable, i) > maxDepth);
         int comb = i / 384;
         int perm = (i >> 4) % 24;
         int ori = i & 15;
@@ -848,13 +848,13 @@ public class Cross {
      * @param p4 Index of the fourth piece.
      * @param orientationChange Value to XOR with orientation (0 or 1).
      */
-    public static void circle(int[] ary, int a, int b, int c, int d, int ori) {
+    public static void circle(int[] array, int p1, int p2, int p3, int p4, int orientationChange) {
         // ... (Logic from original circle)
-        int t = ary[a];
-        ary[a] = ary[d] ^ ori;
-        ary[d] = ary[c] ^ ori;
-        ary[c] = ary[b] ^ ori;
-        ary[b] = t ^ ori;
+        int t = array[p1];
+        array[p1] = array[p4] ^ orientationChange;
+        array[p4] = array[p3] ^ orientationChange;
+        array[p3] = array[p2] ^ orientationChange;
+        array[p2] = t ^ orientationChange;
     }
 
     /**
