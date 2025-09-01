@@ -123,21 +123,71 @@ public class Utils {
         return index;
     }
 
+    /**
+     * Decodes a unique integer index into a specific permutation.
+     * This method converts an index from a factorial number system (factoradic)
+     * into a standard permutation array {p_0, p_1, ..., p_{n-1}}.
+     *
+     * @param permutation The output array to be filled with the generated permutation.
+     * @param index       The unique integer representing the permutation (from 0 to n!-1).
+     * @param length      The number of elements in the permutation (n).
+     * @param even        If true, ensures the generated permutation has an even parity.
+     * This is crucial for puzzles like the Rubik's Cube where only
+     * even permutations are reachable from a solved state.
+     */
     public static void idxToPerm(int[] permutation, int index, int length, boolean even) {
+        // This variable will be used to track the parity of the permutation.
+        // The parity of a permutation is the same as the parity of the sum of its
+        // factoradic digits (Lehmer code).
         int sum = 0;
+        // --- INITIALIZATION ---
+        // Handle the placement of the last one or two elements based on the parity requirement.
         if (even) {
+            // If an even permutation is required, we fix the last two elements temporarily.
+            // We will generate a permutation for the first (n-2) elements and then
+            // adjust these last two if needed to fix the overall parity.
             permutation[length - 1] = 1;
             permutation[length - 2] = 0;
-        } else permutation[length - 1] = 0;
+        } else {
+            // For any permutation (even or odd), we can start by placing 0 at the end.
+            // This value will be adjusted by the inner loop later.
+            permutation[length - 1] = 0;
+        }
+        // Determine the starting point of the loop. If parity is fixed, we only need
+        // to compute the permutation for the first (n-2) elements. Otherwise, (n-1).
         int start = even ? length - 3 : length - 2;
+
+        // --- MAIN GENERATION LOOP ---
+        // Iterate backwards from the second-to-last (or third-to-last) element down to the first.
+        // This process is equivalent to converting a number to its factoradic representation.
         for (int i = start; i >= 0; i--) {
+            // Calculate the next "digit" in the factoradic number system.
+            // For each position 'i', there are (length - i) choices for the element.
             permutation[i] = index % (length - i);
+
+            // Track the sum of these digits to determine the permutation's parity.
             sum += permutation[i];
+
+            // Update the index for the next iteration (equivalent to an integer division
+            // to get the next digit in a different number base).
             index /= length - i;
+
+            // --- COLLISION AVOIDANCE STEP ---
+            // The value permutation[i] is just a temporary digit (part of the Lehmer code).
+            // This inner loop converts it into the final, unique permutation value by
+            // ensuring no numbers are repeated. It "makes room" for the new value by
+            // incrementing any values to its right that are greater than or equal to it.
+
             for (int j = i + 1; j < length; j++)
                 if (permutation[j] >= permutation[i]) permutation[j]++;
         }
+        // --- PARITY CORRECTION STEP ---
+        // This block only executes if an even permutation was requested.
         if (even && sum % 2 != 0) {
+            // If the sum of the factoradic digits is odd, the generated permutation is also odd.
+            // To make it even, we must perform one swap. A single swap of any two elements
+            // always flips the parity of a permutation. Here, we conveniently swap the
+            // last two elements we set aside at the beginning.
             swap(permutation, length - 1, length - 2);
         }
     }

@@ -4,8 +4,6 @@ import android.util.Log;
 
 import java.util.Arrays;
 
-import cs.min2phase.CubieCube;
-
 import static solver.Utils.suff;
 import static solver.Utils.turn;
 
@@ -195,11 +193,11 @@ public class Roux {
             } else n[t] = -1;
         switch (f) {
             case 0: //U
-                Cross.circle(n, 0, 1, 2, 3, 0); break;
+                Cross.cycleEdges(n, 0, 1, 2, 3, 0); break;
             case 1: //r
-                Cross.circle(n, 0, 2, 4, 5, 1);
+                Cross.cycleEdges(n, 0, 2, 4, 5, 1);
             case 2: //R
-                Cross.circle(n, 1, 6, 7, 8, 0); break;
+                Cross.cycleEdges(n, 1, 6, 7, 8, 0); break;
         }
         c = o = 0; q = 3;
         for (t = 0; t < 9; t++)
