@@ -384,7 +384,7 @@ public class Tools {
     }
 
     public static String randomEasyCross(int depth) {
-        int[][] e = Cross.easyCross(depth);
+        int[][] e = Cross.generateEasyCross(depth);
         return randomState(STATE_RANDOM, STATE_RANDOM, e[0], e[1]);
     }
 

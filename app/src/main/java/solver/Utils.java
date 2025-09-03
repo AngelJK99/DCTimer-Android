@@ -23,8 +23,35 @@ public class Utils {
         return table[index >> 3] >> ((index & 7) << 2) & 15;
     }
 
-    public static void setPruning(int[] table, int index, int value) {
-        table[index >> 3] ^= (15 ^ value) << ((index & 7) << 2);
+    /**
+     * Sets a pruning table distance value for a given state index.
+     * <p>
+     * This function uses bitwise operations to store a 4-bit distance value (0-15)
+     * into a packed integer array. Each integer in the table holds 8 such values,
+     * significantly reducing memory usage.
+     *
+     * @param pruningTable The packed array storing the distance data.
+     * @param stateIndex The unique index of the puzzle state (e.g., a specific cross pattern).
+     * @param distance The distance (number of moves from solved) to store for this state.
+     */
+    public static void setPruning(int[] pruningTable, int stateIndex, int distance) {
+        // --- 1. Find the correct integer in the array ---
+        // Each integer stores 8 states, so we divide the index by 8.
+        // (stateIndex >> 3) is a fast way to do integer division by 8.
+        int arrayIndex = stateIndex >> 3;
+
+        // --- 2. Find the correct 4-bit slot within that integer ---
+        // (stateIndex & 7) gets the remainder when dividing by 8 (a value from 0 to 7),
+        // which tells us which of the 8 slots to use.
+        // We multiply by 4 because each slot is 4 bits wide.
+        int bitShift = (stateIndex & 7) << 2;
+
+        // --- 3. Set the 4-bit value ---
+        // The XOR (^) operation is used to set the value. First, we clear the 4-bit slot
+        // by XORing it with 15 (binary 1111), and then we set the new value by XORing
+        // it with the desired distance. The expression (15 ^ distance) combines
+        // this into a single operation.
+        pruningTable[arrayIndex] ^= (15 ^ distance) << bitShift ;
     }
 
     public static int getBit(int[] arr, int idx) {

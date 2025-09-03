@@ -29,7 +29,7 @@ public class EOline {
     protected static String[] moveStringPerOrientation = {"UDLRFB", "UDFBRL", "DURLFB", "DUFBLR",
             "RLUDFB", "RLFBDU", "LRDUFB", "LRFBUD", "BFLRUD", "BFUDRL", "FBLRDU", "FBDURL"};
     // Defines the whole cube rotation needed to bring a specific line to FR/BL.
-    protected static String[] cubeRotationForOrientation = {"", "y", "z2", "z2 y", "z'", "z' y", "z", "z y", "x'", "x' y", "x", "x y"};
+    protected static String[] setupRotations = {"", "y", "z2", "z2 y", "z'", "z' y", "z", "z y", "x'", "x' y", "x", "x y"};
 
     /*
      * Static initializer block to precompute the move tables and pruning tables.
@@ -235,7 +235,7 @@ public class EOline {
                     solutionString.append(' ').append(turn[solutionMoveSequence[j] / 3]).append(suff[solutionMoveSequence[j] % 3]);
                 }
                 // Prepend rotation and edge pair info
-                return "\n" + lineEdgePairNames[orientationIndex] + ": " + cubeRotationForOrientation[orientationIndex] + solutionString.toString();
+                return "\n" + lineEdgePairNames[orientationIndex] + ": " + setupRotations[orientationIndex] + solutionString.toString();
             }
         }
         return "\nError: No solution found for " + lineEdgePairNames[orientationIndex];  // Should ideally always find a solution within max depth

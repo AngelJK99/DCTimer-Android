@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -71,7 +70,7 @@ public class ScrambleDetailDialog extends DialogFragment {
             public void onClick(View view) {
                 if (!expandc) {
                     //tvHint.setVisibility(View.VISIBLE);
-                    tvHintc.setText(Cross.solveCrossf(scramble));
+                    tvHintc.setText(Cross.solveCrossAllSolutions(scramble));
                     ivArrowc.setImageResource(R.drawable.ic_arrow_up);
                     expandc = true;
                 } else {
@@ -86,7 +85,7 @@ public class ScrambleDetailDialog extends DialogFragment {
             @Override
             public void onClick(View view) {
                 if (!expandx) {
-                    tvHintx.setText(Cross.solveXcrossf(scramble));
+                    tvHintx.setText(Cross.solveXcrossAllSolutions(scramble));
                     ivArrowx.setImageResource(R.drawable.ic_arrow_up);
                     expandx = true;
                 } else {

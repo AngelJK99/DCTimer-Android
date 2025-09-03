@@ -199,7 +199,7 @@ public class Scrambler {
                     hint = Petrus.solvePetrus(scramble, APP.solverType[2]);
                     break;
                 case 6:
-                    hint = Cross.solveEofc(scramble, APP.solverType[1]);
+                    hint = Cross.solveEOCross(scramble, APP.solverType[1]);
                     break;
             }
         } else if (isSqScramble()) {
@@ -1197,7 +1197,7 @@ public class Scrambler {
             case 5:
                 return Petrus.solvePetrus(scramble, APP.solverType[2]);
             case 6:
-                return Cross.solveEofc(scramble, APP.solverType[1]);
+                return Cross.solveEOCross(scramble, APP.solverType[1]);
             default:
                 return "";
         }
