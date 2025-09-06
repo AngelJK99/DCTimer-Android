@@ -2,7 +2,7 @@ package solver;
 
 import java.util.Random;
 
-import static solver.Utils.suffInv;
+import static solver.Utils.turnSuffixInverse;
 
 public class Domino {
     private static char[][] cpm = new char[40320][5];
@@ -26,10 +26,10 @@ public class Domino {
                 System.arraycopy(temp, 0, arr, 0, 8);
                 switch (j) {
                     case 0: Utils.circle(arr, 0, 3, 2, 1); break;	//U
-                    case 1: Utils.swap(arr, 0, 7, 3, 4); break;	//L
-                    case 2: Utils.swap(arr, 1, 6, 2, 5); break;	//R
-                    case 3: Utils.swap(arr, 3, 6, 2, 7); break;	//F
-                    case 4: Utils.swap(arr, 0, 5, 1, 4); break;	//B
+                    case 1: Utils.swapTwoPairs(arr, 0, 7, 3, 4); break;	//L
+                    case 2: Utils.swapTwoPairs(arr, 1, 6, 2, 5); break;	//R
+                    case 3: Utils.swapTwoPairs(arr, 3, 6, 2, 7); break;	//F
+                    case 4: Utils.swapTwoPairs(arr, 0, 5, 1, 4); break;	//B
                 }
                 cpm[i][j] = (char) Utils.get8Perm(arr, 8);
                 System.arraycopy(temp, 0, arr, 0, 8);
@@ -46,8 +46,8 @@ public class Domino {
 
         for (int i = 1; i < 40320; i++) cpd[i] = epd[i] = -1;
         cpd[0] = epd[0] = 0;
-        Utils.createPrun(cpd, 13, cpm, 3);
-        Utils.createPrun(epd, 11, epm, 3);
+        Utils.populatePruningTable(cpd, 13, cpm, 3);
+        Utils.populatePruningTable(epd, 11, epm, 3);
         t = System.currentTimeMillis() - t;
         //Log.w("dct", "init " + t + "ms");
         ini = true;
@@ -84,7 +84,7 @@ public class Domino {
                 if (d < 4) continue;
                 StringBuilder s = new StringBuilder();
                 for (int i = 1; i <= d; i++) {
-                    s.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(' ');
+                    s.append(turn[seq[i] / 3]).append(turnSuffixInverse[seq[i] % 3]).append(' ');
                 }
                 return s.toString();
             }
@@ -122,28 +122,28 @@ public class Domino {
                 Utils.circle(img, 32, 29, 26, 23);
                 break;
             case 2:	//L
-                Utils.swap(img,  9, 23, 11, 21);
-                Utils.swap(img, 10, 22,  3, 36);
-                Utils.swap(img,  0, 33,  6, 39);
-                Utils.swap(img, 20, 24, 32, 12);
+                Utils.swapTwoPairs(img,  9, 23, 11, 21);
+                Utils.swapTwoPairs(img, 10, 22,  3, 36);
+                Utils.swapTwoPairs(img,  0, 33,  6, 39);
+                Utils.swapTwoPairs(img, 20, 24, 32, 12);
                 break;
             case 3:	//R
-                Utils.swap(img, 15, 29, 17, 27);
-                Utils.swap(img, 16, 28,  5, 38);
-                Utils.swap(img,  8, 41,  2, 35);
-                Utils.swap(img, 14, 30, 26, 18);
+                Utils.swapTwoPairs(img, 15, 29, 17, 27);
+                Utils.swapTwoPairs(img, 16, 28,  5, 38);
+                Utils.swapTwoPairs(img,  8, 41,  2, 35);
+                Utils.swapTwoPairs(img, 14, 30, 26, 18);
                 break;
             case 4:	//F
-                Utils.swap(img, 12, 26, 14, 24);
-                Utils.swap(img, 13, 25,  7, 34);
-                Utils.swap(img,  6, 35,  8, 33);
-                Utils.swap(img, 11, 27, 15, 23);
+                Utils.swapTwoPairs(img, 12, 26, 14, 24);
+                Utils.swapTwoPairs(img, 13, 25,  7, 34);
+                Utils.swapTwoPairs(img,  6, 35,  8, 33);
+                Utils.swapTwoPairs(img, 11, 27, 15, 23);
                 break;
             case 5:	//B
-                Utils.swap(img, 18, 32, 20, 30);
-                Utils.swap(img, 19, 31,  1, 40);
-                Utils.swap(img,  2, 39,  0, 41);
-                Utils.swap(img, 17, 21, 29,  9);
+                Utils.swapTwoPairs(img, 18, 32, 20, 30);
+                Utils.swapTwoPairs(img, 19, 31,  1, 40);
+                Utils.swapTwoPairs(img,  2, 39,  0, 41);
+                Utils.swapTwoPairs(img, 17, 21, 29,  9);
                 break;
         }
     }

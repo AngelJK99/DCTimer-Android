@@ -1,10 +1,8 @@
 package solver;
 
-import android.util.Log;
-
 import java.util.Random;
 
-import static solver.Utils.suffInv;
+import static solver.Utils.turnSuffixInverse;
 
 public class Cube222 {
     private static int[][] state = new int[2][8];
@@ -158,7 +156,7 @@ public class Cube222 {
                 permmv[p][m] = (short) getprmmv(p, m);
         }
         perm[0] = 0;
-        Utils.createPrun(perm, 7, permmv, 3);
+        Utils.populatePruningTable(perm, 7, permmv, 3);
 
         //then twist
         for (int p = 0; p < 729; p++) {
@@ -167,7 +165,7 @@ public class Cube222 {
                 twstmv[p][m] = (short) gettwsmv(p, m);
         }
         twst[0] = 0;
-        Utils.createPrun(twst, 6, twstmv, 3);
+        Utils.populatePruningTable(twst, 6, twstmv, 3);
     }
 
     private static boolean search(int p, int t, int l, int lm, int[] seq) {
@@ -214,7 +212,7 @@ public class Cube222 {
                 }
                 StringBuilder sol = new StringBuilder();
                 for (int i = 1; i <= l; i++)
-                    sol.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
+                    sol.append(turn[seq[i] / 3]).append(turnSuffixInverse[seq[i] % 3]).append(" ");
                 return sol.toString();
             }
         }
@@ -504,7 +502,7 @@ public class Cube222 {
                 int last = -1;
                 for (int i = 1; i <= 11; i++) {
                     if (last == seq[i] / 3) return "error";
-                    sol.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
+                    sol.append(turn[seq[i] / 3]).append(turnSuffixInverse[seq[i] % 3]).append(" ");
                     last = seq[i] / 3;
                 }
                 return sol.toString();

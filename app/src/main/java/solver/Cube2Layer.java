@@ -4,7 +4,7 @@ import android.util.Log;
 
 import java.util.Arrays;
 
-import static solver.Utils.suff;
+import static solver.Utils.turnSuffix;
 
 public class Cube2Layer {
     private static short[][] cpm3 = new short[210][3];
@@ -120,7 +120,7 @@ public class Cube2Layer {
                 po *= 3;
             }
         int i = Utils.permToIdx(s, k, false);
-        return Utils.fact[k] * c + i << 7 | po / 3;
+        return Utils.factorial[k] * c + i << 7 | po / 3;
     }
 
     private static boolean search3(int scp, int sco, int cp, int co, int d, int lm) {
@@ -200,7 +200,7 @@ public class Cube2Layer {
         StringBuilder sb = new StringBuilder("\n");
         sb.append(color[face]);
         for (int i = d; i > 0; i--)
-            sb.append("URF".charAt(seq[i] / 3)).append(suff[seq[i] % 3]).append(" ");
+            sb.append("URF".charAt(seq[i] / 3)).append(turnSuffix[seq[i] % 3]).append(" ");
         return sb.toString();
     }
 

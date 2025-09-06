@@ -78,11 +78,11 @@ public class Skewb {
 
         for (int i = 0; i < 360; i++) ctd[i] = -1;
         ctd[0] = 0;
-        Utils.createPrun(ctd, 5, ctm, 2);
+        Utils.populatePruningTable(ctd, 5, ctm, 2);
 
         Arrays.fill(cd, (byte) -1);
         cd[0] = 0;
-        Utils.createPrun(cd, 7, com, cpm, 2);
+        Utils.populatePruningTable(cd, 7, com, cpm, 2);
     }
 
     static {

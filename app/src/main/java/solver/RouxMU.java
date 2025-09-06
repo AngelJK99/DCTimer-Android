@@ -1,10 +1,8 @@
 package solver;
 
-import android.util.Log;
-
 import java.util.Random;
 
-import static solver.Utils.suffInv;
+import static solver.Utils.turnSuffixInverse;
 
 public class RouxMU {
     private static short[][] epm = new short[720][2];
@@ -47,7 +45,7 @@ public class RouxMU {
 
         for (i = 0; i < 23040; i++) ed[i] = -1;
         ed[0] = 0;
-        Utils.createPrun(ed, 14, epm, eom, 3);
+        Utils.populatePruningTable(ed, 14, epm, eom, 3);
         for (i = 0; i < 512; i++)  eod[i] = -1;
         eod[0] = 0;
         int c = 1;
@@ -115,7 +113,7 @@ public class RouxMU {
                 }
                 StringBuilder sb = new StringBuilder();
                 for (int i = 1; i <= d; i++)
-                    sb.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
+                    sb.append(turn[seq[i] / 3]).append(turnSuffixInverse[seq[i] % 3]).append(" ");
                 return sb.toString();
             }
         }

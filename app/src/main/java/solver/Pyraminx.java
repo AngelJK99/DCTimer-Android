@@ -152,7 +152,7 @@ public class Pyraminx {
         }
         //fill it
         perm[0] = 0;
-        Utils.createPrun(perm, 5, permmv, 2);
+        Utils.populatePruningTable(perm, 5, permmv, 2);
 
         //then twist && flip
         //initialise arrays
@@ -164,7 +164,7 @@ public class Pyraminx {
         //fill it
         for (p = 0; p < 2592; p++) twst[p] = -1;
         twst[0] = 0;
-        Utils.createPrun(twst, 7, twstmv, flipmv, 2);
+        Utils.populatePruningTable(twst, 7, twstmv, flipmv, 2);
     }
 
     private static int getprmmv(int p, int m) {

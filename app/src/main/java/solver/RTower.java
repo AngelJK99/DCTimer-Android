@@ -1,7 +1,5 @@
 package solver;
 
-import android.util.Log;
-
 import java.util.Random;
 
 public class RTower {
@@ -66,11 +64,11 @@ public class RTower {
             else epd[i] = -1;
         }
         //System.out.println("0 "+n);
-        Utils.createPrun(epd, 4, epm, 3);
+        Utils.populatePruningTable(epd, 4, epm, 3);
 
         for (int i = 1; i < 729; i++) eod[i] = -1;
         eod[0] = 0;
-        Utils.createPrun(eod, 6, eom, 3);
+        Utils.populatePruningTable(eod, 6, eom, 3);
         ini = true;
     }
 

@@ -4,7 +4,7 @@ import android.util.Log;
 
 import java.util.Arrays;
 
-import static solver.Utils.suff;
+import static solver.Utils.turnSuffix;
 import static solver.Utils.turn;
 
 public class Roux {
@@ -322,7 +322,7 @@ public class Roux {
                     StringBuilder sb = new StringBuilder("\n");
                     sb.append(sideStr[side]).append(": ").append(rotateIdx[side / 2]).append(rotateIdx2[idx]);
                     for (int i = d; i > 0; i--)
-                        sb.append(' ').append(turn[seq[i] / 3]).append(suff[seq[i] % 3]);
+                        sb.append(' ').append(turn[seq[i] / 3]).append(turnSuffix[seq[i] % 3]);
                     if (solveS2) {
                         int[] s1 = Arrays.copyOf(seq, d + 1);
                         s1[0] = (side / 2) * 4 + idx;

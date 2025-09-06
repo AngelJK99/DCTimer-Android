@@ -81,11 +81,11 @@ public class SkewbFCN {
         // distance table
         for (int i = 0; i < 360; i++) ctd[i] = -1;
         ctd[0] = 0;
-        Utils.createPrun(ctd, 5, ctm, 2);
+        Utils.populatePruningTable(ctd, 5, ctm, 2);
 
         for (int i = 0; i < 78732; i++) cd[i] = -1;
         cd[0] = 0;
-        Utils.createPrun(cd, 7, com, cpm, 2);
+        Utils.populatePruningTable(cd, 7, com, cpm, 2);
     }
 
     private static String[] turn = {"R", "U", "L", "B"};

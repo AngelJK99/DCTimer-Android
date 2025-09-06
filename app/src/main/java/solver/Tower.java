@@ -2,7 +2,7 @@ package solver;
 
 import java.util.Random;
 
-import static solver.Utils.suffInv;
+import static solver.Utils.turnSuffixInverse;
 
 public class Tower {
     static char[][] cpm = new char[40320][4];
@@ -29,8 +29,8 @@ public class Tower {
                 Utils.set8Perm(arr, 8, i);
                 switch (j) {
                     case 0: Utils.circle(arr, 0, 3, 2, 1); break;	//U
-                    case 1: Utils.swap(arr, 1, 5, 2, 6); break; //Utils.circle(arr, 1, 2, 5, 6);	//R2
-                    case 2: Utils.swap(arr, 2, 4, 3, 5); break; //Utils.circle(arr, 2, 3, 4, 5);	//F2
+                    case 1: Utils.swapTwoPairs(arr, 1, 5, 2, 6); break; //Utils.circle(arr, 1, 2, 5, 6);	//R2
+                    case 2: Utils.swapTwoPairs(arr, 2, 4, 3, 5); break; //Utils.circle(arr, 2, 3, 4, 5);	//F2
                     case 3: Utils.circle(arr, 4, 7, 6, 5); break;	//D
                 }
                 cpm[i][j] = (char) Utils.get8Perm(arr, 8);
@@ -38,7 +38,7 @@ public class Tower {
         }
         for (int i = 1; i < 40320; i++) cpd[i] = -1;
         cpd[0] = 0;
-        Utils.createPrun(cpd, 13, cpm, 3);
+        Utils.populatePruningTable(cpd, 13, cpm, 3);
 		/*	-	0
 		 *	2	1
 		 */
@@ -90,7 +90,7 @@ public class Tower {
                 }
                 StringBuilder sb = new StringBuilder();
                 for (int i = 1; i <= d; i++)
-                    sb.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
+                    sb.append(turn[seq[i] / 3]).append(turnSuffixInverse[seq[i] % 3]).append(" ");
                 return sb.toString();
             }
         }
@@ -118,16 +118,16 @@ public class Tower {
                 Utils.circle(img,  4,  6,  8, 10);
                 break;
             case 1:	//R
-                Utils.swap(img,  1, 29,  3, 31);
-                Utils.swap(img,  8, 25,  9, 24);
-                Utils.swap(img, 16, 17, 15, 18);
-                Utils.swap(img,  7, 26, 23, 10);
+                Utils.swapTwoPairs(img,  1, 29,  3, 31);
+                Utils.swapTwoPairs(img,  8, 25,  9, 24);
+                Utils.swapTwoPairs(img, 16, 17, 15, 18);
+                Utils.swapTwoPairs(img,  7, 26, 23, 10);
                 break;
             case 2:	//F
-                Utils.swap(img,  2, 29,  3, 28);
-                Utils.swap(img,  6, 23,  7, 22);
-                Utils.swap(img, 14, 15, 13, 16);
-                Utils.swap(img,  5, 24, 21,  8);
+                Utils.swapTwoPairs(img,  2, 29,  3, 28);
+                Utils.swapTwoPairs(img,  6, 23,  7, 22);
+                Utils.swapTwoPairs(img, 14, 15, 13, 16);
+                Utils.swapTwoPairs(img,  5, 24, 21,  8);
                 break;
             case 3:	//D
                 Utils.circle(img, 28, 30, 31, 29);

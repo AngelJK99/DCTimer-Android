@@ -305,7 +305,7 @@ public class Util {
         for (int i = end; i >= 0; i--) {
             if (idxC >= Cnk[i][r]) {
                 idxC -= Cnk[i][r--];
-                int p = fact[r];
+                int p = factorial[r];
                 int v = idxP / p << 2;
                 idxP %= p;
                 arr[i] = (val >> v) & 3 | mask;

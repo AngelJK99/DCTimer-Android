@@ -2,7 +2,7 @@ package solver;
 
 import android.util.Log;
 
-import static solver.Utils.suff;
+import static solver.Utils.turnSuffix;
 
 public class Petrus {
     static short[][] epm = new short[1320][6];
@@ -36,7 +36,7 @@ public class Petrus {
                 po |= (n[t] & 1) << (k - 1 - q);
             }
         int p = Utils.permToIdx(s, k, false);
-        return Utils.fact[k] * c + p << 3 | po;
+        return Utils.factorial[k] * c + p << 3 | po;
     }
 
     private static boolean ini = false;
@@ -72,10 +72,10 @@ public class Petrus {
                     com[i * 3 + j][k] = (byte) (p[i][k] * 3 + (o[i][k] + j) % 3);
         for (i = 0; i < 1320; i++) epd[i] = -1;
         epd[17 * 6] = 0;
-        Utils.createPrun(epd, 5, epm, 3);
+        Utils.populatePruningTable(epd, 5, epm, 3);
         for (i = 0; i < 1760; i++) eod[i] = -1;
         eod[17 * 8] = 0;
-        Utils.createPrun(eod, 5, eom, 3);
+        Utils.populatePruningTable(eod, 5, eom, 3);
         inip1 = true;
     }
 
@@ -178,7 +178,7 @@ public class Petrus {
                 StringBuilder sb = new StringBuilder("\n");
                 sb.append(blks[block]);
                 for (int i = d; i > 0; i--)
-                    sb.append(' ').append(moveIdx[block].charAt(seq[i] / 3)).append(suff[seq[i] % 3]);
+                    sb.append(' ').append(moveIdx[block].charAt(seq[i] / 3)).append(turnSuffix[seq[i] % 3]);
                 if (solveS2) sb.append(petrus2(s, block, d));
                 return sb.toString();
             }
@@ -228,7 +228,7 @@ public class Petrus {
                 if (idaPetrus2(co2[idx], ep2[idx], eo2[idx], l, -1, idx)) {
                     StringBuilder sb = new StringBuilder(" /");
                     for (int i = l; i > 0; i--)
-                        sb.append(' ').append(moveIdx[block].charAt(seq[i] / 3)).append(suff[seq[i] % 3]);
+                        sb.append(' ').append(moveIdx[block].charAt(seq[i] / 3)).append(turnSuffix[seq[i] % 3]);
                     return sb.toString();
                 }
         }

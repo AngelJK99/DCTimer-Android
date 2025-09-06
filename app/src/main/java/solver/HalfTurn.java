@@ -4,8 +4,6 @@ import android.util.Log;
 
 import java.util.Random;
 
-import static solver.Utils.swap;
-
 public class HalfTurn {
     private static short[][] cpm = new short[24][6];
     private static short[][][] epm = new short[3][24][6];
@@ -19,43 +17,43 @@ public class HalfTurn {
             for (int j = 0; j < 6; j++) {
                 Utils.idxToPerm(temp, i, 4, false);
                 switch (j) {
-                    case 0: swap(temp, 0, 1); break;
-                    case 1: swap(temp, 2, 3); break;
-                    case 2: swap(temp, 0, 2); break;
-                    case 3: swap(temp, 1, 3); break;
-                    case 4: swap(temp, 1, 2); break;
-                    case 5: swap(temp, 0, 3); break;
+                    case 0: Utils.swap(temp, 0, 1); break;
+                    case 1: Utils.swap(temp, 2, 3); break;
+                    case 2: Utils.swap(temp, 0, 2); break;
+                    case 3: Utils.swap(temp, 1, 3); break;
+                    case 4: Utils.swap(temp, 1, 2); break;
+                    case 5: Utils.swap(temp, 0, 3); break;
                 }
                 cpm[i][j] = (byte) Utils.permToIdx(temp, 4, false);
                 Utils.idxToPerm(temp, i, 4, false);
                 switch (j) {
-                    case 0: swap(temp, 0, 1); break;
-                    case 1: swap(temp, 2, 3); break;
-                    case 2: swap(temp, 0, 3); break;
-                    case 3: swap(temp, 1, 2); break;
+                    case 0: Utils.swap(temp, 0, 1); break;
+                    case 1: Utils.swap(temp, 2, 3); break;
+                    case 2: Utils.swap(temp, 0, 3); break;
+                    case 3: Utils.swap(temp, 1, 2); break;
                 }
                 epm[0][i][j] = (byte) Utils.permToIdx(temp, 4, false);
                 Utils.idxToPerm(temp, i, 4, false);
                 switch (j) {
-                    case 0: swap(temp, 0, 1); break;
-                    case 1: swap(temp, 2, 3); break;
-                    case 4: swap(temp, 0, 3); break;
-                    case 5: swap(temp, 1, 2); break;
+                    case 0: Utils.swap(temp, 0, 1); break;
+                    case 1: Utils.swap(temp, 2, 3); break;
+                    case 4: Utils.swap(temp, 0, 3); break;
+                    case 5: Utils.swap(temp, 1, 2); break;
                 }
                 epm[1][i][j] = (byte) Utils.permToIdx(temp, 4, false);
                 Utils.idxToPerm(temp, i, 4, false);
                 switch (j) {
-                    case 2: swap(temp, 0, 3); break;
-                    case 3: swap(temp, 1, 2); break;
-                    case 4: swap(temp, 0, 1); break;
-                    case 5: swap(temp, 2, 3); break;
+                    case 2: Utils.swap(temp, 0, 3); break;
+                    case 3: Utils.swap(temp, 1, 2); break;
+                    case 4: Utils.swap(temp, 0, 1); break;
+                    case 5: Utils.swap(temp, 2, 3); break;
                 }
                 epm[2][i][j] = (byte) Utils.permToIdx(temp, 4, false);
             }
         }
         for (int i = 1; i < 576; i++) cpd[i] = -1;
         cpd[0] = 0;
-        Utils.createPrun(cpd, 3, cpm, cpm, 1);
+        Utils.populatePruningTable(cpd, 3, cpm, cpm, 1);
         for (int i = 0; i < 24; i++)
             for (int j = 0; j < 24; j++)
                 for (int k = 0; k < 24; k++)

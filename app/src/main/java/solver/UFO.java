@@ -43,13 +43,13 @@ public class UFO {
                 int a = perm[0]; perm[0] = perm[5]; perm[5] = perm[4]; perm[4] = perm[3]; perm[3] = perm[2]; perm[2] = perm[1]; perm[1] = a;
                 break;
             case 1:	//A
-                Utils.swap(perm, 4, 10, 0, 7); Utils.swap(perm, 5, 6);
+                Utils.swapTwoPairs(perm, 4, 10, 0, 7); Utils.swap(perm, 5, 6);
                 break;
             case 2:	//B
-                Utils.swap(perm, 5, 6, 3, 8); Utils.swap(perm, 4, 7);
+                Utils.swapTwoPairs(perm, 5, 6, 3, 8); Utils.swap(perm, 4, 7);
                 break;
             case 3:	//C
-                Utils.swap(perm, 2, 7, 4, 9); Utils.swap(perm, 3, 8);
+                Utils.swapTwoPairs(perm, 2, 7, 4, 9); Utils.swap(perm, 3, 8);
                 break;
         }
     }

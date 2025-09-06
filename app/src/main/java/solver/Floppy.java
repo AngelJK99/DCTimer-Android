@@ -99,20 +99,20 @@ public class Floppy {
     private static void move(int turn) {
         switch (turn) {
             case 0: //U
-                Utils.swap(img,  0,  2,  3,  7);
-                Utils.swap(img,  4,  8,  6, 10);
+                Utils.swapTwoPairs(img,  0,  2,  3,  7);
+                Utils.swapTwoPairs(img,  4,  8,  6, 10);
                 Utils.swap(img,  5,  9); break;
             case 1:	//R
-                Utils.swap(img,  7, 23,  2, 29);
-                Utils.swap(img,  6, 24, 22,  8);
+                Utils.swapTwoPairs(img,  7, 23,  2, 29);
+                Utils.swapTwoPairs(img,  6, 24, 22,  8);
                 Utils.swap(img, 14, 16); break;
             case 2:	//D
-                Utils.swap(img, 27, 29, 19, 23);
-                Utils.swap(img, 20, 24, 22, 26);
+                Utils.swapTwoPairs(img, 27, 29, 19, 23);
+                Utils.swapTwoPairs(img, 20, 24, 22, 26);
                 Utils.swap(img, 21, 25); break;
             case 3:	//L
-                Utils.swap(img,  3, 19,  0, 27);
-                Utils.swap(img,  4, 26, 20, 10);
+                Utils.swapTwoPairs(img,  3, 19,  0, 27);
+                Utils.swapTwoPairs(img,  4, 26, 20, 10);
                 Utils.swap(img, 12, 18); break;
         }
     }

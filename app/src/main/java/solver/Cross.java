@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static solver.Utils.Cnk;
-import static solver.Utils.suff;
+import static solver.Utils.turnSuffix;
 import static solver.Utils.getPruning;
 import static solver.Utils.setPruning;
 
@@ -181,7 +181,7 @@ public class Cross {
                 for (int move = 0; move < NUM_FACES; move++) {
                     // Calculate the resulting state after applying the move
                     // high bits for new combination & permutation, low bits for new orientation
-                    int newPackedCoord = calculateNextEdgeStateAfterMove(combinationIdx, permOrientIdx, move);
+                    int newPackedCoord = getNextEdgeStateAfterMove(combinationIdx, permOrientIdx, move);
 
                     // Unpack and store the new permutation coordinate.
                     int combinedPermCoord = NUM_CROSS_EDGES_PERMUTATIONS * combinationIdx
@@ -209,21 +209,21 @@ public class Cross {
             crossEdgePermutationDistanceTable[i] = -1;
         }
         crossEdgePermutationDistanceTable[SOLVED_CROSS_PERMUTATION] = 0;  // Solved state for cross edges
-        Utils.createPrun(crossEdgePermutationDistanceTable, 6, crossEdgePermutationMoveTable, 3); // Max depth 6-7 for EP
+        Utils.populatePruningTable(crossEdgePermutationDistanceTable, 6, crossEdgePermutationMoveTable, 3); // Max depth 6-7 for EP
 
         // --- Orientation Pruning Table ---
         for (int i = 0; i < NUM_CROSS_EDGES_COMBINATIONS * NUM_CROSS_EDGES_ORIENTATIONS; i++) {
             crossEdgeOrientationDistanceTable[i] = crossEdgesOrientFlipDistanceTable[i] = -1;
         }
         crossEdgeOrientationDistanceTable[SOLVED_CROSS_ORIENTATION] = 0; // Solved state 69 * 16
-        Utils.createPrun(crossEdgeOrientationDistanceTable, 7, crossEdgeOrientationMoveTable, 3);
+        Utils.populatePruningTable(crossEdgeOrientationDistanceTable, 7, crossEdgeOrientationMoveTable, 3);
 
         // For any combination of 4 edges, if their orientation bits are all 0, it's a solved orientation state *for that combination*.
         // This is used for EO-first approaches where edges are first put in slice, then oriented.
         for (int combinationIdx = 0; combinationIdx < NUM_CROSS_EDGES_COMBINATIONS; combinationIdx++) {
             crossEdgesOrientFlipDistanceTable[combinationIdx << 4] = 0; // combination * 16 + 0 orientation bits
         }
-        Utils.createPrun(crossEdgesOrientFlipDistanceTable, 4, crossEdgeOrientationMoveTable, 3);
+        Utils.populatePruningTable(crossEdgesOrientFlipDistanceTable, 4, crossEdgeOrientationMoveTable, 3);
 
         // =================================================================================
         // Part 3 & 4: Generate Move and Pruning Tables for X-Cross (Cross + 1st F2L pair)
@@ -257,7 +257,8 @@ public class Cross {
                 for (int move = 0; move < NUM_FACES; move++) {
                     xcrossCornerMoveTable[corner * NUM_ORIENTATIONS_PER_CORNER + orientation][move] =
                             (byte) (cornerPermutations[corner][move] * NUM_ORIENTATIONS_PER_CORNER +
-                                    (cornerOrientationChanges[corner][move] + orientation) % NUM_ORIENTATIONS_PER_CORNER
+                                    (cornerOrientationChanges[corner][move] + orientation) %
+                                            NUM_ORIENTATIONS_PER_CORNER
                     );
                 }
             }
@@ -360,8 +361,8 @@ public class Cross {
      * @param lastMoveAxis The face that was just turned, to avoid redundant moves (e.g., U U').
      * @return True if a solution is found within the given depth, false otherwise.
      */
-    private static boolean searchForCrossSolution(int currentEdgePermutation, int currentEdgeOrientation,
-                                                  int depthRemaining, int lastMoveAxis) {
+    private static boolean searchForCross(int currentEdgePermutation, int currentEdgeOrientation,
+                                          int depthRemaining, int lastMoveAxis) {
         // Base Case: If we are at depth 0, check if the cross is solved.
         // The numbers 1656 and 1104 are the specific coordinate values for a solved cross.
         if (depthRemaining == 0) {
@@ -395,7 +396,7 @@ public class Cross {
                     nextEdgeOrientation = crossEdgeOrientationMoveTable[nextEdgeOrientation][moveAxis];
 
                     // Recursively call the function for the new state with one less depth.
-                    if (searchForCrossSolution(
+                    if (searchForCross(
                             nextEdgePermutation,
                             nextEdgeOrientation,
                             depthRemaining - 1,
@@ -426,8 +427,8 @@ public class Cross {
      * @param solvedOnFaceIdx      The face index (0-5) on which the cross is defined as solved (usually D=0).
      * @param currentPathMoves     Array to build up the solution path.
      */
-    private static void searchForCrossSolution(int currentEdgePermutation, int currentEdgeOrientation, int depthRemaining,
-                                               int lastMoveAxis, int solvedOnFaceIdx, int[] currentPathMoves) {
+    private static void searchForCross(int currentEdgePermutation, int currentEdgeOrientation, int depthRemaining,
+                                       int lastMoveAxis, int solvedOnFaceIdx, int[] currentPathMoves) {
         // --- Base Case: We've reached the maximum search depth ---
         if (depthRemaining == 0) {
             // Check if the current state is the solved state.
@@ -447,7 +448,7 @@ public class Cross {
 
                     solutionString.append(' ')
                             .append(MOVE_CHAR_MAP_PER_ORIENTATION[0][0].charAt(moveAxis))
-                            .append(suff[moveCode % 3]);
+                            .append(turnSuffix[moveCode % 3]);
                     quarterTurnMove += (turnType == 1) ? 2 : 1; // A '2' turn (like U2) counts as 2 quarter turns.
                 }
 
@@ -489,7 +490,7 @@ public class Cross {
                     currentPathMoves[depthRemaining] = moveAxis * NUM_MAX_TURN + turnCount;
 
                     // Recursively call the function for the new state with one less depth.
-                    searchForCrossSolution(
+                    searchForCross(
                             nextEdgePermutation,
                             nextEdgeOrientation,
                             depthRemaining - 1,
@@ -619,7 +620,7 @@ public class Cross {
 
                     solutionString.append(' ')
                             .append(MOVE_CHAR_MAP_PER_ORIENTATION[0][0].charAt(faceIndex))
-                            .append(suff[turnType]);
+                            .append(turnSuffix[turnType]);
                     quarterTurnMetric += (turnType == 1) ? 2 : 1; // R2 counts as 2 quarter turns.
                 }
 
@@ -852,7 +853,7 @@ public class Cross {
                 int[] currentPath = new int[searchDepth  + 1];
 
                 // Call the recursive solver that finds ALL solutions for the given depth.
-                searchForCrossSolution(edgePermutation, edgeOrientation, searchDepth , INITIAL_LAST_FACE, faceIndex, currentPath);
+                searchForCross(edgePermutation, edgeOrientation, searchDepth , INITIAL_LAST_FACE, faceIndex, currentPath);
 
                 // --- 3. Format and Store Optimal Solutions ---
                 // If solutions were found at this depth, they are guaranteed to be optimal.
@@ -981,7 +982,7 @@ public class Cross {
 
             // Apply each move of the scramble to the cross and all 4 F2L pair coordinates.
             for (String move : scrambleMoves) {
-                if (move.length() > 0) {
+                if (!move.isEmpty()) {
                     int face = MOVE_CHAR_MAP_PER_ORIENTATION[0][faceIndex].indexOf(move.charAt(0));
                     for (int i = 0; i < (move.length() > 1 && move.charAt(1) == '\'' ? 3 : (move.length() > 1 && move.charAt(1) == '2' ? 2 : 1)); i++) {
                         for (int pair = 0; pair < NUM_F2L_SLOTS; pair++) {
@@ -1007,7 +1008,7 @@ public class Cross {
                 }
                 // --- 3. Format and Store Optimal Solutions ---
                 // If solutions were found at this depth, they are optimal. Format them and stop searching deeper.
-                if (solutions.size() > 0) {
+                if (!solutions.isEmpty()) {
                     allSolutionsBuilder.append(FACE_COLORS[faceIndex]).append(":\n");
                     for (String solutionString : solutions) {
                         int idx = solutionString.indexOf('\t');
@@ -1156,7 +1157,7 @@ public class Cross {
         Utils.idxToPerm(permutationArray, permutationIndex, NUM_CROSS_EDGES, false);
 
         // Note: The map {3, 2, 1, 0} defines which edge pieces are used for the cross.
-        mapCrossPiecesInEdgeSlots(pieceStateArray, permutationArray, combinationIndex, orientationIndex, new int[] {3, 2, 1, 0});
+        idxToComb(pieceStateArray, permutationArray, combinationIndex, orientationIndex, new int[] {3, 2, 1, 0});
 
         // Final step: Unpack the piece state (ID+orientation) into a 2D array for easy use.
         int[][] unpackedScrambleState = new int[2][NUM_EDGES];
@@ -1189,8 +1190,8 @@ public class Cross {
      * @return An integer packing the new combination, permutation, and orientation.
      */
 
-    private static int calculateNextEdgeStateAfterMove (int initialCombinationIdx, int initialPermOrientIdx,
-                                                       int moveIndex) {
+    private static int getNextEdgeStateAfterMove (int initialCombinationIdx, int initialPermOrientIdx,
+                                                 int moveIndex) {
         // getMV
         // --- 1. DECODING: Convert coordinates into a physical state ---
 
@@ -1202,7 +1203,7 @@ public class Cross {
         Utils.idxToPerm(crossPiecePermutation, initialPermOrientIdx, NUM_CROSS_EDGES, false); // This gives a permutation of {0,1,2,3}
 
         // Place the 4 pieces into the 12 slots using the combination index.
-        mapCrossPiecesInEdgeSlots(edgeSlotArray, crossPiecePermutation, initialCombinationIdx, initialPermOrientIdx);
+        idxToComb(edgeSlotArray, crossPiecePermutation, initialCombinationIdx, initialPermOrientIdx);
 
         // --- 2. ACTION: Apply the move ---
         // Simulate the physical face turn on the array representing the edges.
@@ -1278,6 +1279,28 @@ public class Cross {
                           +---+---+---+
                           |   | 3 |   |
                           +---+---+---+
+
+                          +---+---+---+
+                          |   | 3 |   |
+                          +---+---+---+
+                          | 2 | U | 0 |
+                          +---+---+---+
+                          |   | 1 |   |
+                          +---+---+---+
+            +---+---+---+ +---+---+---+ +---+---+---+ +---+---+---+
+            |   | 2 |   | |   | 1 |   | |   | 0 |   | |   | 3 |   |
+            +---+---+---+ +---+---+---+ +---+---+---+ +---+---+---+
+            |10 | L | 9 | | 9 | F | 8 | | 8 | R |11 | |11 | B |10 |
+            +---+---+---+ +---+---+---+ +---+---+---+ +---+---+---+
+            |   | 6 |   | |   | 5 |   | |   | 4 |   | |   | 7 |   |
+            +---+---+---+ +---+---+---+ +---+---+---+ +---+---+---+
+                          +---+---+---+
+                          |   | 5 |   |
+                          +---+---+---+
+                          | 6 | D | 4 |
+                          +---+---+---+
+                          |   | 7 |   |
+                          +---+---+---+
     */
 
 
@@ -1310,8 +1333,8 @@ public class Cross {
      * @param combinationIndex    The C(12,4) index for choosing 4 edges.
      * @param orientationBits     4 LSBs represent orientation of the 4 permutedPieceIndices.
      */
-    private static void mapCrossPiecesInEdgeSlots(int[] edgeSlotsArray, int[] piecePermutation,
-                                                  int combinationIndex, int orientationBits) {
+    private static void idxToComb (int[] edgeSlotsArray, int[] piecePermutation,
+                                  int combinationIndex, int orientationBits) {
         // idxToComb
         // Number of pieces we still need to place. Starts at 4 and decrements.
         int piecesToPlace = NUM_CROSS_EDGES;
@@ -1369,8 +1392,8 @@ public class Cross {
      * @param orientationBits           A packed integer with the orientation for each piece.
      * @param pieceIdMap                A mapping array to translate local piece IDs to global IDs.
      */
-    private static void mapCrossPiecesInEdgeSlots(int[] edgeSlotsArray, int[] localPiecePermutation,
-                                                  int combinationIndex, int orientationBits, int[] pieceIdMap) {
+    private static void idxToComb(int[] edgeSlotsArray, int[] localPiecePermutation,
+                                  int combinationIndex, int orientationBits, int[] pieceIdMap) {
         // idxToComb
         int piecesToPlace = NUM_CROSS_EDGES; // Counter for remaining pieces
 
@@ -1453,7 +1476,7 @@ public class Cross {
         // The first solution found is guaranteed to be one of the shortest.
         for (int searchDepth = 0; searchDepth < MAX_CROSS_DEPTH; searchDepth++) {
             // Call the recursive IDA* solver for the current depth.
-            if (searchForCrossSolution(
+            if (searchForCross(
                     edgePermutation,
                     edgeOrientation,
                     searchDepth,
@@ -1468,7 +1491,7 @@ public class Cross {
                     int face = moveCode / 3;
                     int turnType = moveCode % 3;
                     solutionBuilder.append(' ').append(MOVE_CHAR_MAP_PER_ORIENTATION[0][solverOrientation].charAt(face))
-                            .append(suff[turnType]);
+                            .append(turnSuffix[turnType]);
                 }
                 return solutionBuilder.toString();
             }
@@ -1557,7 +1580,7 @@ public class Cross {
                         int face = moveCode / 3;
                         int turnType = moveCode % 3;
                         solutionBuilder.append(' ').append(MOVE_CHAR_MAP_PER_ORIENTATION[0][0].charAt(face))
-                                .append(suff[turnType]);
+                                .append(turnSuffix[turnType]);
                     }
                     return solutionBuilder.toString();
                 }
@@ -1636,7 +1659,7 @@ public class Cross {
                     int face = moveCode / NUM_MAX_TURN;
                     int turnType = moveCode % NUM_MAX_TURN;
                     solutionBuilder.append(' ').append(MOVE_CHAR_MAP_PER_ORIENTATION[0][0].charAt(face))
-                            .append(suff[turnType]);
+                            .append(turnSuffix[turnType]);
                 }
                 return solutionBuilder.toString();
             }

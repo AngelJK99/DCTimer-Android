@@ -5,8 +5,8 @@ import android.util.Log;
 import java.util.Random;
 
 import static solver.Utils.permutationSign;
-import static solver.Utils.suff;
-import static solver.Utils.suffInv;
+import static solver.Utils.turnSuffix;
+import static solver.Utils.turnSuffixInverse;
 
 public class CubeRU {
     private static short[][] cpm = new short[720][2];
@@ -49,10 +49,10 @@ public class CubeRU {
         }
         for (int i = 1; i < 174960; i++) cd[i] = -1;
         cd[0] = 0;
-        Utils.createPrun(cd, 14, cpm, com, 3);
+        Utils.populatePruningTable(cd, 14, cpm, com, 3);
         for (int i = 1; i < 5040; i++) epd[i] = -1;
         epd[0] = 0;
-        Utils.createPrun(epd, 11, epm, 3);
+        Utils.populatePruningTable(epd, 11, epm, 3);
         time = System.currentTimeMillis() - time;
         Log.w("dct", "init "+time+"ms");
     }
@@ -100,8 +100,8 @@ public class CubeRU {
                 }
                 StringBuilder sb = new StringBuilder();
                 for (int i = 1; i <= d; i++) {
-                    if (lu) sb.append(turnlu[seq[i] / 3]).append(suff[seq[i] % 3]).append(" ");
-                    else sb.append(turn[seq[i] / 3]).append(suffInv[seq[i] % 3]).append(" ");
+                    if (lu) sb.append(turnlu[seq[i] / 3]).append(turnSuffix[seq[i] % 3]).append(" ");
+                    else sb.append(turn[seq[i] / 3]).append(turnSuffixInverse[seq[i] % 3]).append(" ");
                 }
                 return sb.toString();
             }
