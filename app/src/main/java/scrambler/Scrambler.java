@@ -193,10 +193,10 @@ public class Scrambler {
                     hint = EOline.solveEOline(scramble, APP.solverType[1]);
                     break;
                 case 4:
-                    hint = Roux.solveRoux1(scramble, APP.solverType[3]);
+                    hint = Roux.solveRouxStage1(scramble, APP.solverType[3]);
                     break;
                 case 5:
-                    hint = Petrus.solvePetrus(scramble, APP.solverType[2]);
+                    hint = PetrusSolver.solvePetrus(scramble, APP.solverType[2]);
                     break;
                 case 6:
                     hint = Cross.solveEOCross(scramble, APP.solverType[1]);
@@ -206,7 +206,7 @@ public class Scrambler {
             hint = Sq1Shape.solve(idx, scramble);
         } else if (is222Scramble()) {
             if (idx == 1)
-                hint = Cube2Face.solveFace(scramble, APP.solverType[4]);
+                hint = Cube2Face.solveForFaces(scramble, APP.solverType[4]);
             else hint = Cube2Layer.solveFirstLayer(scramble, APP.solverType[4]);
         } else if (isPyrScramble()) {
             hint = PyraminxV.solveV(scramble, idx);
@@ -412,7 +412,7 @@ public class Scrambler {
                 scrambleList.add(scr);
                 break;
             case 10:    //无连色
-                scr = Cube222.scrambleNobar(); imageType = 2;
+                scr = Cube222.scrambleNoBar(); imageType = 2;
                 scrambleList.add(scr);
                 break;
             case 11:
@@ -1193,9 +1193,9 @@ public class Scrambler {
             case 3:
                 return EOline.solveEOline(scramble, APP.solverType[1]);
             case 4:
-                return Roux.solveRoux1(scramble, APP.solverType[3]);
+                return Roux.solveRouxStage1(scramble, APP.solverType[3]);
             case 5:
-                return Petrus.solvePetrus(scramble, APP.solverType[2]);
+                return PetrusSolver.solvePetrus(scramble, APP.solverType[2]);
             case 6:
                 return Cross.solveEOCross(scramble, APP.solverType[1]);
             default:
@@ -1206,7 +1206,7 @@ public class Scrambler {
     public String solve222(String scramble) {
         switch (APP.solve222) {
             case 1:
-                return Cube2Face.solveFace(scramble, APP.solverType[4]);
+                return Cube2Face.solveForFaces(scramble, APP.solverType[4]);
             case 2:
                 return Cube2Layer.solveFirstLayer(scramble, APP.solverType[4]);
             default:
@@ -1300,7 +1300,7 @@ public class Scrambler {
                     c.drawRect(stx + sp + (j + 3) * a, sty + sp * 2 + (i + 5) * a, stx + sp + (j + 4) * a, sty + sp * 2 + (i + 6) * a, p);
                 }
         } else if (imageType == TYPE_223) { //2x2x3
-            int[] img = Tower.image(scramble);
+            int[] img = Tower.getImageForScramble(scramble);
             int a = width / 10, i, j, d = 0;
             int stx = (width * 94 / 100 - 8 * a) / 2, sty = (width * 71 / 100 - 7 * a) / 2;
             int sp = width / 50;

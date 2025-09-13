@@ -134,11 +134,11 @@ public class RTower {
         int epx = ep, cpx = cp;
         for (int i = len1; i > 0; i--) {
             int m = sol[i] / 3, t = sol[i] % 3;
-            epx = epm[epx][m]; cpx = Tower.cpm[cpx][m];
+            epx = epm[epx][m]; cpx = Tower.moveTableCornerPerm[cpx][m];
             if (t > 0) {
-                epx = epm[epx][m]; cpx = Tower.cpm[cpx][m];
+                epx = epm[epx][m]; cpx = Tower.moveTableCornerPerm[cpx][m];
                 if (t > 1) {
-                    epx = epm[epx][m]; cpx = Tower.cpm[cpx][m];
+                    epx = epm[epx][m]; cpx = Tower.moveTableCornerPerm[cpx][m];
                 }
             }
         }
@@ -156,13 +156,13 @@ public class RTower {
 
     private static boolean search2(int cp, int ep, int d, int lf) {
         if (d == 0) return cp == 0 && ep == 0;
-        if (Tower.epd[ep] > d || Tower.cpd[cp] > d) return false;
+        if (Tower.PRUNING_TABLE_EDGE[ep] > d || Tower.pruningTableCorner[cp] > d) return false;
         for (int i = 0; i < 4; i++) {
             if (i != lf) {
                 int y = cp, s = ep;
                 for (int k = 0; k < faces[i]; k++) {
-                    y = Tower.cpm[y][i];
-                    s = Tower.epm[s][i];
+                    y = Tower.moveTableCornerPerm[y][i];
+                    s = Tower.moveTableEdgePerm[s][i];
                     sol[d + len1] = i * 3 + (faces[i] == 1 ? 1 : k);
                     if (search2(y, s, d - 1, i)) {
                         //sb.insert(0, turn2[i]+(i<2?"2":suff[k])+" ");
