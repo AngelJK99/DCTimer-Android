@@ -787,6 +787,7 @@ public class Roux {
         // Reset variables to build the new coordinates.
         int newCombinationIndex = 0;
         int newOrientationIndex = 0;
+        piecesToPlace = NUM_CORNER_S2 / 2;
 
         // Scan the 9 slots to find the new positions and orientations.
         for (int i = 0; i < NUM_EDGE_S2; i++)
@@ -849,7 +850,7 @@ public class Roux {
 
         // Scan the 6 slots to find the new positions and orientations.
         int newCombinationIndex = 0;
-
+        piecesToPlace = 2;
         // Scan the 6 slots to find the new positions and orientations.
         for (int t = 5; t >= 0; t--) {
             if (cornerSlotArray[t] >= 0) {
