@@ -2,7 +2,6 @@ package solver;
 
 import java.util.Random;
 
-import static solver.PetrusSolver.moveIndex;
 import static solver.Utils.turnSuffixInverse;
 /**
  * A solver for the LSE (Last Six Edges) stage of the Roux method, using only M and U moves.
@@ -36,8 +35,8 @@ public class RouxMU {
     private static short[][] moveTableEdgeOrient = new short[NUM_EDGE_ORIENT_STATES][NUM_MOVES];
 
     // Move tables for the permutation of U-layer corners and M-slice centers.
-    private static short[][] moveTableCenterPerm = {{1, 0}, {2, 1}, {3, 2}, {0, 3}};
-    private static short[][] moveTableCornerPerm_ULUR = {{0, 1}, {1, 2}, {2, 3}, {3, 0}};
+    private static final short[][] moveTableCenterPerm = {{1, 0}, {2, 1}, {3, 2}, {0, 3}};
+    private static final short[][] moveTableCornerPerm_ULUR = {{0, 1}, {1, 2}, {2, 3}, {3, 0}};
 
     // Pruning tables for different coordinate combinations.
     private static byte[] pruningTableEdge = new byte[NUM_EDGE_PERM_STATES  * NUM_EDGE_ORIENT_STATES];
@@ -215,8 +214,8 @@ public class RouxMU {
                 StringBuilder scrambleBuilder = new StringBuilder();
                 for (int i = 1; i <= searchDepth; i++) {
                     int moveCode = solutionSequence[i];
-                    int faceIndex = moveCode / 3;
-                    int turnType = moveCode % 3;
+                    int faceIndex = moveCode / NUM_TURN_TYPES;
+                    int turnType = moveCode % NUM_TURN_TYPES;
                     scrambleBuilder
                             .append(MOVE_CHARS[faceIndex])
                             .append(turnSuffixInverse[turnType])

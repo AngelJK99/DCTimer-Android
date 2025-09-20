@@ -90,7 +90,7 @@ public class Scrambler {
     private cs.min2phase.Search cube3 = new cs.min2phase.Search();
     private cs.threephase.Search cube4 = new cs.threephase.Search();
     private cs.sq12phase.Search cubesq = new cs.sq12phase.Search();
-    private Megaminx megaminx = new Megaminx();
+    private MegaminxScrambler megaminxScrambler = new MegaminxScrambler();
     private Clock clock = new Clock();
     private Random r = new Random();
 
@@ -203,13 +203,13 @@ public class Scrambler {
                     break;
             }
         } else if (isSqScramble()) {
-            hint = Sq1Shape.solve(idx, scramble);
+            hint = Square1ShapeSolver.solve(idx, scramble);
         } else if (is222Scramble()) {
             if (idx == 1)
                 hint = Cube2Face.solveForFaces(scramble, APP.solverType[4]);
             else hint = Cube2Layer.solveFirstLayer(scramble, APP.solverType[4]);
         } else if (isPyrScramble()) {
-            hint = PyraminxV.solveV(scramble, idx);
+            hint = PyraminxVSolver.solveV(scramble, idx);
         }
     }
 
@@ -235,7 +235,7 @@ public class Scrambler {
         } else if (category == -24 || (category > 191 && category < 224)) { //五魔
             imageType = StringUtils.getImageType(scramble, 10);
             if (imageType == TYPE_MEGA) {
-                megaminx.image(scramble);
+                megaminxScrambler.image(scramble);
             }
         } else if (category == -22 || (category > 255 && category < 288)) { //SQ1
             imageType = StringUtils.getImageType(scramble, 9);
@@ -309,25 +309,25 @@ public class Scrambler {
                 scrambleList.add(scr);
                 break;
             case -24:	//五魔
-                scr = megaminx.scramblestring(Math.abs(scrambleLen)); imageType = TYPE_MEGA;
+                scr = megaminxScrambler.scramblestring(Math.abs(scrambleLen)); imageType = TYPE_MEGA;
                 scrambleList.add(scr);
                 break;
             case -23:	//金字塔
                 scr = Pyraminx.scrambleWCA(); imageType = TYPE_PYR;
                 scrambleList.add(scr);
-                if (APP.solvePyr > 0) hint = PyraminxV.solveV(scr, APP.solvePyr);
+                if (APP.solvePyr > 0) hint = PyraminxVSolver.solveV(scr, APP.solvePyr);
                 break;
             case -22:	//SQ1
                 scr = cubesq.scrambleWCA(); imageType = TYPE_SQ1;
                 scrambleList.add(scr);
-                hint = Sq1Shape.solve(APP.solveSq1, scr);
+                hint = Square1ShapeSolver.solve(APP.solveSq1, scr);
                 break;
             case -21:	//魔表
                 scr = clock.scramble(); imageType = TYPE_CLK;
                 scrambleList.add(scr);
                 break;
             case -20:	//斜转
-                scr = Skewb.scrambleWCA(); imageType = TYPE_SKW;
+                scr = SkewbSolver.scrambleWCA(); imageType = TYPE_SKW;
                 scrambleList.add(scr);
                 break;
             case -19:	//六阶
@@ -676,7 +676,7 @@ public class Scrambler {
                 scrambleList.add(scr);
                 break;
             case 192: //五魔
-                scr = megaminx.scramblestring(scrambleLen); imageType = TYPE_MEGA;
+                scr = megaminxScrambler.scramblestring(scrambleLen); imageType = TYPE_MEGA;
                 scrambleList.add(scr);
                 break;
             case 193:
@@ -686,7 +686,7 @@ public class Scrambler {
             case 224: //金字塔
                 scr = Pyraminx.scramble(); imageType = TYPE_PYR;
                 scrambleList.add(scr);
-                if (APP.solvePyr > 0) hint = PyraminxV.solveV(scr, APP.solvePyr);
+                if (APP.solvePyr > 0) hint = PyraminxVSolver.solveV(scr, APP.solvePyr);
                 break;
             case 225:
                 String[][] ss = {{"", "b ", "b' "}, {"", "l ", "l' "}, {"", "u ", "u' "}, {"", "r ", "r' "}};
@@ -702,7 +702,7 @@ public class Scrambler {
                 scrambleLen += cnt;
                 imageType = TYPE_PYR;
                 scrambleList.add(scr);
-                if (APP.solvePyr > 0) hint = PyraminxV.solveV(scr, APP.solvePyr);
+                if (APP.solvePyr > 0) hint = PyraminxVSolver.solveV(scr, APP.solvePyr);
                 break;
             case 226:   //L4E
                 scr = Pyraminx.scrambleL4E();
@@ -713,19 +713,19 @@ public class Scrambler {
                 scr = SQ1.scramblestring(scrambleLen);
                 imageType = TYPE_SQ1;
                 scrambleList.add(scr);
-                hint = Sq1Shape.solve(APP.solveSq1, scr);
+                hint = Square1ShapeSolver.solve(APP.solveSq1, scr);
                 break;
             case 257:
                 scr = sq1Scramble(0, scrambleLen);
                 imageType = TYPE_SQ1;
                 scrambleList.add(scr);
-                hint = Sq1Shape.solve(APP.solveSq1, scr);
+                hint = Square1ShapeSolver.solve(APP.solveSq1, scr);
                 break;
             case 258:
                 scr = cubesq.scramble();
                 imageType = TYPE_SQ1;
                 scrambleList.add(scr);
-                hint = Sq1Shape.solve(APP.solveSq1, scr);
+                hint = Square1ShapeSolver.solve(APP.solveSq1, scr);
                 break;
             case 259:
                 scr = cubesq.scramble(1037);
@@ -758,7 +758,7 @@ public class Scrambler {
                 scrambleList.add(scr);
                 break;
             case 320:	//Skewb
-                scr = Skewb.scramble();
+                scr = SkewbSolver.scramble();
                 imageType = TYPE_SKW;
                 scrambleList.add(scr);
                 break;
@@ -768,12 +768,12 @@ public class Scrambler {
                 scrambleList.add(scr);
                 break;
             case 322:   //L2L
-                scr = Skewb.scrambleL2L();
+                scr = SkewbSolver.scrambleL2L();
                 imageType = TYPE_SKW;
                 scrambleList.add(scr);
                 break;
             case 352:	//MxNxL
-                scr = Floppy.scramble(); imageType = TYPE_133;
+                scr = FloppyCubeSolver.scramble(); imageType = TYPE_133;
                 scrambleList.add(scr);
                 break;
             case 353:
@@ -781,15 +781,15 @@ public class Scrambler {
                 scrambleList.add(scr);
                 break;
             case 354:
-                scr = Domino.scramble(); imageType = TYPE_233;
+                scr = DominoSolver.scramble(); imageType = TYPE_233;
                 scrambleList.add(scr);
                 break;
             case 355:
-                scr = Tower.scramble(); imageType = TYPE_223;
+                scr = TowerSolver.scramble(); imageType = TYPE_223;
                 scrambleList.add(scr);
                 break;
             case 356:
-                scr = RTower.scramble(); imageType = 0;
+                scr = RexTowerSolver.scramble(); imageType = 0;
                 scrambleList.add(scr);
                 break;
             case 357:	//334
@@ -851,7 +851,7 @@ public class Scrambler {
                 scrambleList.add(scr);
                 break;
             case 416:	//齿轮
-                scr = Gear.scramble(); imageType = 0;
+                scr = GearCubeSolver.scramble(); imageType = 0;
                 scrambleList.add(scr);
                 break;
             case 417:
@@ -936,7 +936,7 @@ public class Scrambler {
                 scrambleList.add(scr);
                 break;
             case 520:   //8 puzzle
-                scr = EightPuzzle.scramble(r);
+                scr = EightPuzzleSolver.scramble(r);
                 imageType = TYPE_8PZ;
                 scrambleList.add(scr);
                 break;
@@ -1065,9 +1065,9 @@ public class Scrambler {
                 String ft = scramble333();
                 String pyr = Pyraminx.scramble();
                 String sq1 = cubesq.scramble();
-                String skw = Skewb.scramble();
+                String skw = SkewbSolver.scramble();
                 String clk = clock.scramble();
-                String mega = megaminx.scramblestring(70);
+                String mega = megaminxScrambler.scramblestring(70);
                 scr = "2x2) " + s2 + "\n3x3) " + s3 + "\n4x4) " + s4 +"\n5x5) " + s5 + "\n6x6) " + s6 + "\n7x7) " + s7 + "\n3OH) " + oh + "\n3FT) " + ft + "\nPyra) " + pyr + "\nSQ1) " + sq1 + "\nSkewb) " + skw + "\nClock) " + clk + "\nMega) " + mega;
                 scrambleList.add(s2);
                 scrambleList.add(s3);
@@ -1091,9 +1091,9 @@ public class Scrambler {
                 oh = scramble333();
                 pyr = Pyraminx.scramble();
                 sq1 = cubesq.scramble();
-                skw = Skewb.scramble();
+                skw = SkewbSolver.scramble();
                 clk = clock.scramble();
-                mega = megaminx.scramblestring(70);
+                mega = megaminxScrambler.scramblestring(70);
                 scr = "2x2) " + s2 + "\n3x3) " + s3 + "\n4x4) " + s4 +"\n5x5) " + s5 + "\n3OH) " + oh + "\nPyra) " + pyr + "\nSQ1) " + sq1 + "\nSkewb) " + skw + "\nClock) " + clk + "\nMega) " + mega;
                 scrambleList.add(s2);
                 scrambleList.add(s3);
@@ -1226,7 +1226,7 @@ public class Scrambler {
         } else if (imageType == TYPE_CLK) { //魔表
             drawClock(width, p, c);
         } else if (imageType == TYPE_133) { //1x3x3
-            int[] img = Floppy.image(scramble);
+            int[] img = FloppyCubeSolver.getImage(scramble);
             int a = (width * 92 / 100) / 8, i, j, d = 0;
             int stx = (width * 94 / 100 - 8 * a) / 2, sty = (width * 71 / 100 - 5 * a) / 2;
             int sp = width / 50;
@@ -1263,7 +1263,7 @@ public class Scrambler {
                 c.drawRect(stx + sp + (i + 1) * a, sty + sp * 2 + 4 * a, stx + sp + (i + 2) * a, sty + sp * 2 + 5 * a , p);
             }
         } else if (imageType == TYPE_233) { //2x3x3
-            int[] img = Domino.image(scramble);
+            int[] img = DominoSolver.image(scramble);
             int a = (width * 92 / 100) / 12, i, j, d = 0;
             int stx = (width * 94 / 100 - 12 * a) / 2, sty = (width * 71 / 100 - 8 * a) / 2;
             int sp = width / 50;
@@ -1300,7 +1300,7 @@ public class Scrambler {
                     c.drawRect(stx + sp + (j + 3) * a, sty + sp * 2 + (i + 5) * a, stx + sp + (j + 4) * a, sty + sp * 2 + (i + 6) * a, p);
                 }
         } else if (imageType == TYPE_223) { //2x2x3
-            int[] img = Tower.getImageForScramble(scramble);
+            int[] img = TowerSolver.getImageForScramble(scramble);
             int a = width / 10, i, j, d = 0;
             int stx = (width * 94 / 100 - 8 * a) / 2, sty = (width * 71 / 100 - 7 * a) / 2;
             int sp = width / 50;
@@ -1338,11 +1338,11 @@ public class Scrambler {
                     c.drawRect(stx + sp + (j + 2) * a, sty + sp * 2 + (5 + i) * a, stx + sp + (j + 3) * a, sty + sp * 2 + (6 + i) * a, p);
                 }
         } else if (imageType == TYPE_SKW) { //斜转
-            int[] img = SkewbFCN.image(scramble);
+            int[] img = SkewbSolverFCN.getImage(scramble);
             if (img == null) return;
             drawSkewb(img, width, p, c);
         } else if (imageType == TYPE_15P || imageType == TYPE_15PB) {   //15 puzzle
-            int[] img = FifteenPuzzle.image(scramble, imageType == TYPE_15P);
+            int[] img = FifteenPuzzle.getStateFromScramble(scramble, imageType == TYPE_15P);
             int wid = width / 6;
             int stx = (width - wid * 4) / 2;
             int sty = (width * 3 / 4 - wid * 4) / 2;
@@ -1475,7 +1475,7 @@ public class Scrambler {
                 } else if (scrambleIdx == 6) {
                     drawSQ1(scrambleList.get(scrambleIdx), width, p, c);
                 } else if (scrambleIdx == 7) {
-                    int[] img = SkewbFCN.image(scrambleList.get(scrambleIdx));
+                    int[] img = SkewbSolverFCN.getImage(scrambleList.get(scrambleIdx));
                     if (img == null) return;
                     drawSkewb(img, width, p, c);
                 } else if (scrambleIdx == 8) {
@@ -1492,7 +1492,7 @@ public class Scrambler {
             } else if (scrambleIdx == 9) {
                 drawSQ1(scrambleList.get(scrambleIdx), width, p, c);
             } else if (scrambleIdx == 10) {
-                int[] img = SkewbFCN.image(scrambleList.get(scrambleIdx));
+                int[] img = SkewbSolverFCN.getImage(scrambleList.get(scrambleIdx));
                 if (img == null) return;
                 drawSkewb(img, width, p, c);
             } else if (scrambleIdx == 11) {
@@ -1501,7 +1501,7 @@ public class Scrambler {
                 drawMega(width, p, c);
             }
         } else if (imageType == TYPE_8PZ) {
-            int[] img = EightPuzzle.image(scramble);
+            int[] img = EightPuzzleSolver.getImageForScramble(scramble);
             int wid = width / 5;
             int stx = (width - wid * 3) / 2;
             int sty = (width * 3 / 4 - wid * 3) / 2;
@@ -1665,7 +1665,7 @@ public class Scrambler {
         };
         int d = 0;
         float d2x = (float) (majorR * (1 - centerFrac) / 2 / Math.tan(Math.PI / 5));
-        int[] img = megaminx.getState();
+        int[] img = megaminxScrambler.getFaceletState();
         p.setStyle(Paint.Style.FILL);
         for (int side = 0; side < 12; side++) {
             float a = trans[side][1] + trans[side][3] * c18(trans[side][4]) * pentR;

@@ -28,7 +28,10 @@ public class UFO {
 
     // Flag to ensure initialization only runs once.
     static boolean isInitialized = false;
+
     //</editor-fold>
+
+    //<editor-fold desc="Initialization">
 
     /**
      * Initializes and pre-computes the pruning table for the solver.

@@ -12,10 +12,10 @@ import static solver.Utils.turnSuffixInverse;
  * using only U, D, R2, and F2 moves. It also includes methods to generate a
  * visual representation of the cube's state.
  */
-public class Tower {
+public class TowerSolver {
     //<editor-fold desc="Constants & Class Variables">
     // --- Constants ---
-    private static final int NUM_CORNER_PERM_STATES = 40320; // 8!
+    public static final int NUM_CORNER_PERM_STATES = 40320; // 8!
     private static final int NUM_EDGE_PERM_STATES = 6;       // 3!
     private static final int NUM_MOVES = 4;                  // U, R2, F2, D
     private static final int MAX_SOLUTION_DEPTH = 20;
@@ -53,7 +53,7 @@ public class Tower {
      * Initializes and pre-computes all lookup tables for the solver.
      * This heavy computation is run only once.
      */
-    public static void init() {
+    public static void initialize() {
         if (isInitialized) {
             return;
         }
